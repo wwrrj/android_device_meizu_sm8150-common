@@ -73,6 +73,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_BOOT_JARS += \
     telephony-ext
 
+# Vibrator
+PRODUCT_PACKAGES += \
+    android.hardware.vibrator@1.2-service.meizu_sm8150
+
 # VNDK-SP
 PRODUCT_PACKAGES += \
     vndk-sp
