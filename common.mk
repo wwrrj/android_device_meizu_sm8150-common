@@ -45,6 +45,10 @@ PRODUCT_PACKAGES += \
     libvulkan \
     vendor.display.config@1.0
 
+# Lights
+PRODUCT_PACKAGES += \
+    android.hardware.light@2.0-service.meizu_sm8150
+
 # Media
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/media/media_profiles_vendor.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/media_profiles_vendor.xml
