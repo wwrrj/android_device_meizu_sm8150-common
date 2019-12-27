@@ -61,7 +61,6 @@ class FingerprintInscreen : public IFingerprintInscreen {
     std::mutex mCallbackLock;
     sp<IFingerprintInscreenCallback> mCallback;
 
-    int32_t mHBM;
     bool mIconShown;
     bool mFingerPressed;
 
