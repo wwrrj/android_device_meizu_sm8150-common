@@ -19,6 +19,12 @@
 #include "Light.h"
 
 #include <android-base/logging.h>
+#include <fstream>
+
+#define PANEL_BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/brightness"
+#define PANEL_MAX_BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/max_brightness"
+#define MX_LED_BRIGHTNESS_PATH "/sys/class/leds/mx-led/brightness"
+#define MX_LED_BLINK_PATH "/sys/class/leds/mx-led/blink"
 
 namespace {
 using android::hardware::light::V2_0::LightState;
@@ -42,11 +48,27 @@ namespace light {
 namespace V2_0 {
 namespace implementation {
 
-Light::Light(std::pair<std::ofstream, uint32_t>&& panel_backlight,
-             std::ofstream&& mx_led, std::ofstream&& mx_blink)
-    : mPanelBacklight(std::move(panel_backlight)),
-      mMxLed(std::move(mx_led)),
-      mMxBlink(std::move(mx_blink)) {
+/*
+ * Write value to path and close file.
+ */
+template <typename T>
+static void set(const std::string& path, const T& value) {
+    std::ofstream file(path);
+    file << value;
+}
+
+template <typename T>
+static T get(const std::string& path, const T& def) {
+    std::ifstream file(path);
+    T result;
+
+    file >> result;
+    return file.fail() ? def : result;
+}
+
+Light::Light() {
+    mPanelMaxBrightness = get(PANEL_MAX_BRIGHTNESS_PATH, DEFAULT_MAX_BRIGHTNESS);
+
     auto attnFn(std::bind(&Light::setAttentionLight, this, std::placeholders::_1));
     auto backlightFn(std::bind(&Light::setPanelBacklight, this, std::placeholders::_1));
     auto batteryFn(std::bind(&Light::setBatteryLight, this, std::placeholders::_1));
@@ -95,13 +117,12 @@ void Light::setPanelBacklight(const LightState& state) {
 
     // If max panel brightness is not the default (255),
     // apply linear scaling across the accepted range.
-    if (mPanelBacklight.second != DEFAULT_MAX_BRIGHTNESS) {
+    if (mPanelMaxBrightness != DEFAULT_MAX_BRIGHTNESS) {
         int old_brightness = brightness;
-        brightness = brightness * mPanelBacklight.second / DEFAULT_MAX_BRIGHTNESS;
-        LOG(VERBOSE) << "scaling brightness " << old_brightness << " => " << brightness;
+        brightness = brightness * mPanelMaxBrightness / DEFAULT_MAX_BRIGHTNESS;
     }
 
-    mPanelBacklight.first << brightness << std::endl;
+    set(PANEL_BRIGHTNESS_PATH, brightness);
 }
 
 void Light::setBatteryLight(const LightState& state) {
@@ -153,7 +174,7 @@ void Light::setSpeakerBatteryLightLocked() {
         setSpeakerLightLocked(mBatteryState);
     } else {
         // Lights off
-        mMxLed << 0 << std::endl;
+        set(MX_LED_BRIGHTNESS_PATH, 0);
     }
 }
 
@@ -182,12 +203,12 @@ void Light::setSpeakerLightLocked(const LightState& state) {
     }
 
     // Disable all blinking to start
-    mMxBlink << 0 << std::endl;
+    set(MX_LED_BLINK_PATH, 0);
 
     if (blink) {
-        mMxBlink << 10 << std::endl;
+        set(MX_LED_BLINK_PATH, 10);
     } else {
-        mMxLed << brightness << std::endl;
+        set(MX_LED_BRIGHTNESS_PATH, brightness);
     }
 }
 

@@ -30,47 +30,8 @@ using android::hardware::joinRpcThreadpool;
 using android::hardware::light::V2_0::ILight;
 using android::hardware::light::V2_0::implementation::Light;
 
-const static std::string kPanelBacklightPath = "/sys/class/backlight/panel0-backlight/brightness";
-const static std::string kPanelMaxBacklightPath = "/sys/class/backlight/panel0-backlight/max_brightness";
-const static std::string kMxLedPath = "/sys/class/leds/mx-led/brightness";
-const static std::string kMxBlinkPath = "/sys/class/leds/mx-led/blink";
-
 int main() {
-    uint32_t panelMaxBrightness = 255;
-
-    std::ofstream panelBacklight(kPanelBacklightPath);
-    if (!panelBacklight) {
-        LOG(ERROR) << "Failed to open " << kPanelBacklightPath << ", error=" << errno
-                   << " (" << strerror(errno) << ")";
-        return -errno;
-    }
-
-    std::ifstream panelMaxBacklight(kPanelMaxBacklightPath);
-    if (!panelMaxBacklight) {
-        LOG(ERROR) << "Failed to open " << kPanelMaxBacklightPath << ", error=" << errno
-                   << " (" << strerror(errno) << ")";
-        return -errno;
-    } else {
-        panelMaxBacklight >> panelMaxBrightness;
-    }
-
-    std::ofstream mxLed(kMxLedPath);
-    if (!mxLed) {
-        LOG(ERROR) << "Failed to open " << kMxLedPath << ", error=" << errno
-                   << " (" << strerror(errno) << ")";
-        return -errno;
-    }
-
-    std::ofstream mxBlink(kMxBlinkPath);
-    if (!mxBlink) {
-        LOG(ERROR) << "Failed to open " << kMxBlinkPath << ", error=" << errno
-                   << " (" << strerror(errno) << ")";
-        return -errno;
-    }
-
-    android::sp<ILight> service = new Light(
-            {std::move(panelBacklight), panelMaxBrightness},
-            std::move(mxLed), std::move(mxBlink));
+    android::sp<ILight> service = new Light();
 
     configureRpcThreadpool(1, true);
 

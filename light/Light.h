@@ -20,7 +20,6 @@
 #include <android/hardware/light/2.0/ILight.h>
 #include <hidl/Status.h>
 
-#include <fstream>
 #include <mutex>
 #include <unordered_map>
 
@@ -31,8 +30,7 @@ namespace V2_0 {
 namespace implementation {
 
 struct Light : public ILight {
-    Light(std::pair<std::ofstream, uint32_t>&& panel_backlight,
-          std::ofstream&& mx_led, std::ofstream&& mx_blink);
+    Light();
 
     // Methods from ::android::hardware::light::V2_0::ILight follow.
     Return<Status> setLight(Type type, const LightState& state) override;
@@ -46,9 +44,7 @@ struct Light : public ILight {
     void setSpeakerBatteryLightLocked();
     void setSpeakerLightLocked(const LightState& state);
 
-    std::pair<std::ofstream, uint32_t> mPanelBacklight;
-    std::ofstream mMxLed;
-    std::ofstream mMxBlink;
+    int mPanelMaxBrightness;
 
     LightState mAttentionState;
     LightState mBatteryState;
