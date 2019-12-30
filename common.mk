@@ -45,6 +45,10 @@ PRODUCT_PACKAGES += \
     libvulkan \
     vendor.display.config@1.0
 
+# Init
+PRODUCT_PACKAGES += \
+    init.qcom.rc
+
 # Lights
 PRODUCT_PACKAGES += \
     android.hardware.light@2.0-service.meizu_sm8150
