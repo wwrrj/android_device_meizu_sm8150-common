@@ -24,7 +24,7 @@ source "${HELPER}"
 setup_vendor "${DEVICE_COMMON}" "${VENDOR}" "${MOKEE_ROOT}" true
 
 # Copyright headers and guards
-write_headers "m1928"
+write_headers "m1971 m1973 m1928"
 
 write_makefiles "${MY_DIR}/proprietary-files.txt"
 
