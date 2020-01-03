@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The MoKee Open Source Project
+ * Copyright (C) 2019-2020 The MoKee Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@
 
 #define PANEL_BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/brightness"
 #define PANEL_MAX_BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/max_brightness"
-#define MX_LED_BRIGHTNESS_PATH "/sys/class/leds/mx-led/brightness"
-#define MX_LED_BLINK_PATH "/sys/class/leds/mx-led/blink"
+#define MX_LED_BRIGHTNESS_PATH LIGHT_MX_LED_PATH "/brightness"
+#define MX_LED_BLINK_PATH LIGHT_MX_LED_PATH "/blink"
 
 namespace {
 using android::hardware::light::V2_0::LightState;
@@ -120,6 +120,7 @@ void Light::setPanelBacklight(const LightState& state) {
     if (mPanelMaxBrightness != DEFAULT_MAX_BRIGHTNESS) {
         int old_brightness = brightness;
         brightness = brightness * mPanelMaxBrightness / DEFAULT_MAX_BRIGHTNESS;
+        LOG(VERBOSE) << "scaling brightness " << old_brightness << " => " << brightness;
     }
 
     set(PANEL_BRIGHTNESS_PATH, brightness);
