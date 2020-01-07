@@ -1,0 +1,4 @@
+service livedisplay-hal-2-0-meizu_sm8150 /system/bin/hw/mokee.livedisplay@2.0-service-meizu_sm8150
+    class late_start
+    user system
+    group system
