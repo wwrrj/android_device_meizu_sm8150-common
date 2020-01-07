@@ -32,7 +32,7 @@ using ::android::hardware::Void;
 #define FILE_HBM "/sys/class/meizu/lcm/display/hbm"
 
 class SunlightEnhancement : public ISunlightEnhancement {
-   public:
+  public:
     bool isSupported();
 
     // Methods from ::vendor::mokee::livedisplay::V2_0::ISunlightEnhancement follow.

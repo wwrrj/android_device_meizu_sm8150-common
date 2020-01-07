@@ -31,7 +31,7 @@ using ::android::hardware::Return;
 using ::android::hardware::Void;
 
 class PictureAdjustment : public IPictureAdjustment {
-   public:
+  public:
     PictureAdjustment(void* libHandle, uint64_t cookie);
 
     bool isSupported();
@@ -45,11 +45,11 @@ class PictureAdjustment : public IPictureAdjustment {
     Return<void> getPictureAdjustment(getPictureAdjustment_cb _hidl_cb) override;
     Return<void> getDefaultPictureAdjustment(getDefaultPictureAdjustment_cb _hidl_cb) override;
     Return<bool> setPictureAdjustment(
-        const ::vendor::mokee::livedisplay::V2_0::HSIC& hsic) override;
+            const ::vendor::mokee::livedisplay::V2_0::HSIC& hsic) override;
 
     static void updateDefaultPictureAdjustment();
 
-   private:
+  private:
     void* mLibHandle;
     uint64_t mCookie;
 
