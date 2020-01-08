@@ -68,15 +68,16 @@ int main() {
         libHandle = dlopen(lib, RTLD_NOW);
         libName = lib;
         if (libHandle != nullptr) {
-            LOG(INFO) << "Loaded: " << libName;
             break;
         }
-        LOG(ERROR) << "Can not load " << libName << " (" << dlerror() << ")";
+        LOG(WARNING) << "Can not load " << libName << " (" << dlerror() << ")";
     }
 
     if (libHandle == nullptr) {
         LOG(ERROR) << "Failed to load SDM display lib, exiting.";
         goto shutdown;
+    } else {
+        LOG(INFO) << "Loaded: " << libName;
     }
 
     disp_api_init =
