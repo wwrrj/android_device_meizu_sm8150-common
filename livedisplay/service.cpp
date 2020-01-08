@@ -60,7 +60,7 @@ int main() {
 
     status_t status = OK;
 
-    android::ProcessState::initWithDriver("/dev/vndbinder");
+    android::ProcessState::initWithDriver("/dev/binder");
 
     LOG(INFO) << "LiveDisplay HAL service is starting.";
 
