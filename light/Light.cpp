@@ -23,8 +23,10 @@
 
 #define PANEL_BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/brightness"
 #define PANEL_MAX_BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/max_brightness"
-#define MX_LED_BRIGHTNESS_PATH LIGHT_MX_LED_PATH "/brightness"
 #define MX_LED_BLINK_PATH LIGHT_MX_LED_PATH "/blink"
+
+#define LED_OFF 0
+#define LED_BLINK 10
 
 namespace {
 using android::hardware::light::V2_0::LightState;
@@ -71,11 +73,9 @@ Light::Light() {
 
     auto attnFn(std::bind(&Light::setAttentionLight, this, std::placeholders::_1));
     auto backlightFn(std::bind(&Light::setPanelBacklight, this, std::placeholders::_1));
-    auto batteryFn(std::bind(&Light::setBatteryLight, this, std::placeholders::_1));
     auto notifFn(std::bind(&Light::setNotificationLight, this, std::placeholders::_1));
     mLights.emplace(std::make_pair(Type::ATTENTION, attnFn));
     mLights.emplace(std::make_pair(Type::BACKLIGHT, backlightFn));
-    mLights.emplace(std::make_pair(Type::BATTERY, batteryFn));
     mLights.emplace(std::make_pair(Type::NOTIFICATIONS, notifFn));
 }
 
@@ -126,90 +126,19 @@ void Light::setPanelBacklight(const LightState& state) {
     set(PANEL_BRIGHTNESS_PATH, brightness);
 }
 
-void Light::setBatteryLight(const LightState& state) {
-    std::lock_guard<std::mutex> lock(mLock);
-    mBatteryState = state;
-    setSpeakerBatteryLightLocked();
-}
-
 void Light::setNotificationLight(const LightState& state) {
     std::lock_guard<std::mutex> lock(mLock);
-
-    uint32_t brightness, color, rgb[3];
-    LightState localState = state;
-
-    // If a brightness has been applied by the user
-    brightness = (localState.color & 0xff000000) >> 24;
-    if (brightness > 0 && brightness < 255) {
-        // Retrieve each of the RGB colors
-        color = localState.color & 0x00ffffff;
-        rgb[0] = (color >> 16) & 0xff;
-        rgb[1] = (color >> 8) & 0xff;
-        rgb[2] = color & 0xff;
-
-        // Apply the brightness level
-        if (rgb[0] > 0) {
-            rgb[0] = (rgb[0] * brightness) / 0xff;
-        }
-        if (rgb[1] > 0) {
-            rgb[1] = (rgb[1] * brightness) / 0xff;
-        }
-        if (rgb[2] > 0) {
-            rgb[2] = (rgb[2] * brightness) / 0xff;
-        }
-
-        // Update with the new color
-        localState.color = (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
-    }
-
-    mNotificationState = localState;
+    mNotificationState = state;
     setSpeakerBatteryLightLocked();
 }
 
 void Light::setSpeakerBatteryLightLocked() {
     if (isLit(mNotificationState)) {
-        setSpeakerLightLocked(mNotificationState);
+        set(MX_LED_BLINK_PATH, LED_BLINK);
     } else if (isLit(mAttentionState)) {
-        setSpeakerLightLocked(mAttentionState);
-    } else if (isLit(mBatteryState)) {
-        setSpeakerLightLocked(mBatteryState);
+        set(MX_LED_BLINK_PATH, LED_BLINK);
     } else {
-        // Lights off
-        set(MX_LED_BRIGHTNESS_PATH, 0);
-    }
-}
-
-void Light::setSpeakerLightLocked(const LightState& state) {
-    int blink;
-    int onMs, offMs;
-    uint32_t brightness = rgbToBrightness(state);
-
-    switch (state.flashMode) {
-        case Flash::TIMED:
-            onMs = state.flashOnMs;
-            offMs = state.flashOffMs;
-            break;
-        case Flash::NONE:
-        default:
-            onMs = 0;
-            offMs = 0;
-            break;
-    }
-
-    blink = onMs > 0 && offMs > 0;
-
-    // Only battery was allowed to use solid light
-    if (state != mBatteryState) {
-        blink = 0;
-    }
-
-    // Disable all blinking to start
-    set(MX_LED_BLINK_PATH, 0);
-
-    if (blink) {
-        set(MX_LED_BLINK_PATH, 10);
-    } else {
-        set(MX_LED_BRIGHTNESS_PATH, brightness);
+        set(MX_LED_BLINK_PATH, LED_OFF);
     }
 }
 

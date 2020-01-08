@@ -38,16 +38,13 @@ struct Light : public ILight {
 
   private:
     void setAttentionLight(const LightState& state);
-    void setBatteryLight(const LightState& state);
     void setPanelBacklight(const LightState& state);
     void setNotificationLight(const LightState& state);
     void setSpeakerBatteryLightLocked();
-    void setSpeakerLightLocked(const LightState& state);
 
     int mPanelMaxBrightness;
 
     LightState mAttentionState;
-    LightState mBatteryState;
     LightState mNotificationState;
 
     std::unordered_map<Type, std::function<void(const LightState&)>> mLights;
