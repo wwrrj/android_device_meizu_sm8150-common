@@ -1,0 +1,24 @@
+//
+// Copyright (C) 2020 The MoKee Open Source Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+cc_binary {
+    name: "mokee.touch@1.0-service.meizu_sm8150",
+    init_rc: ["mokee.touch@1.0-service.meizu_sm8150.rc"],
+    defaults: ["hidl_defaults"],
+    relative_install_path: "hw",
+    srcs: [
+        "TouchscreenGesture.cpp",
+        "service.cpp",
+    ],
+    shared_libs: [
+        "libbase",
+        "libbinder",
+        "libhidlbase",
+        "libhidltransport",
+        "libutils",
+        "vendor.mokee.touch@1.0",
+    ],
+}
