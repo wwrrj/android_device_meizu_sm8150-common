@@ -19,7 +19,11 @@ meizu_sm8150_fod_hal_binary {
     defaults: ["hidl_defaults"],
     name: "mokee.biometrics.fingerprint.inscreen@1.0-service.meizu_sm8150",
     init_rc: ["mokee.biometrics.fingerprint.inscreen@1.0-service.meizu_sm8150.rc"],
-    srcs: ["service.cpp", "FingerprintInscreen.cpp"],
+    srcs: [
+        "KeyEventWatcher.cpp",
+        "FingerprintInscreen.cpp",
+        "service.cpp",
+    ],
     shared_libs: [
         "libbase",
         "libhardware",
