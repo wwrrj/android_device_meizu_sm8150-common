@@ -37,7 +37,7 @@
 
     <!-- Control whether the always on display mode is enabled by default. This value will be used
          during initialization when the setting is still null. -->
-    <bool name="config_dozeAlwaysOnEnabled">false</bool>
+    <bool name="config_dozeAlwaysOnEnabled">true</bool>
 
     <!-- Power Management: Specifies whether to decouple the auto-suspend state of the
          device from the display on/off state.
@@ -83,13 +83,13 @@
 
     <!-- Specifies the maximum burn-in offset displacement from the center. If -1, no maximum value
          will be used. -->
-    <integer name="config_burnInProtectionMaxRadius">70</integer>
+    <integer name="config_burnInProtectionMaxRadius">-1</integer>
 
     <!-- Specifies the minimum burn-in offset horizontally. -->
-    <integer name="config_burnInProtectionMinHorizontalOffset">-60</integer>
+    <integer name="config_burnInProtectionMinHorizontalOffset">-15</integer>
 
     <!-- Specifies the maximum burn-in offset horizontally. -->
-    <integer name="config_burnInProtectionMaxHorizontalOffset">60</integer>
+    <integer name="config_burnInProtectionMaxHorizontalOffset">15</integer>
 
     <!-- Specifies the minimum burn-in offset vertically. -->
     <integer name="config_burnInProtectionMinVerticalOffset">-40</integer>
