@@ -33,6 +33,7 @@
 // #define NOTIFY_DISABLE_PAY_ENVIRONMENT 1610
 
 #define BOOST_ENABLE_PATH "/sys/class/meizu/fp/qos_set"
+#define DIMMING_SPEED_PATH "/sys/class/meizu/lcm/display/dimming_speed"
 #define HBM_ENABLE_PATH "/sys/class/meizu/lcm/display/hbm"
 #define BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/brightness"
 
@@ -88,18 +89,21 @@ Return<void> FingerprintInscreen::onFinishEnroll() {
 
 Return<void> FingerprintInscreen::onPress() {
     set(HBM_ENABLE_PATH, 1);
+    set(DIMMING_SPEED_PATH, 1);
     notifyHal(NOTIFY_FINGER_DOWN);
     return Void();
 }
 
 Return<void> FingerprintInscreen::onRelease() {
     set(HBM_ENABLE_PATH, 0);
+    set(DIMMING_SPEED_PATH, 1);
     notifyHal(NOTIFY_FINGER_UP);
     return Void();
 }
 
 Return<void> FingerprintInscreen::onShowFODView() {
     set(BOOST_ENABLE_PATH, 1);
+    set(DIMMING_SPEED_PATH, 1);
     notifyHal(NOTIFY_UI_READY);
     return Void();
 }
