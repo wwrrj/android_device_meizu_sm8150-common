@@ -2,3 +2,4 @@ import /init.target.rc
 
 on init
     mount none /system/etc/audio_policy_configuration.xml /vendor/etc/audio/audio_policy_configuration.xml bind
+    mount none /system/etc/a2dp_audio_policy_configuration.xml /vendor/etc/a2dp_audio_policy_configuration.xml bind
