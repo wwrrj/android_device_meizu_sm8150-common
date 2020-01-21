@@ -67,13 +67,11 @@ static void *work(void *arg) {
             LOG(ERROR) << "Failed reading " << thiz->mFile << ": " << errno;
             goto error;
         } else if (len == 0) {
+            usleep(10 * 1000);
             continue;
         }
 
-        len = sscanf(buf, "%d", &value);
-        if (len != 1) {
-            continue;
-        }
+        value = atoi(buf);
 
         thiz->mCallback(thiz->mFile, value);
     }
