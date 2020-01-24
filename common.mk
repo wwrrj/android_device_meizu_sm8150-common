@@ -22,9 +22,6 @@ TARGET_SCREEN_WIDTH := 1080
 # Properties
 PRODUCT_COMPATIBLE_PROPERTY_OVERRIDE := true
 
-# VNDK
-PRODUCT_TARGET_VNDK_VERSION := 28
-
 # Permissions
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/handheld_core_hardware.xml \
