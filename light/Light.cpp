@@ -22,7 +22,6 @@
 #include <fstream>
 
 #define PANEL_BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/brightness"
-#define PANEL_MAX_BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/max_brightness"
 #define MX_LED_BLINK_PATH LIGHT_MX_LED_PATH "/blink"
 
 #define LED_OFF 0
@@ -31,7 +30,10 @@
 namespace {
 using android::hardware::light::V2_0::LightState;
 
-static constexpr int DEFAULT_MAX_BRIGHTNESS = 255;
+static constexpr float BRIGHTNESS_MIN = 5;
+static constexpr float BRIGHTNESS_MAX = 1023;
+static constexpr float BRIGHTNESS_RANGE_OLD = 255 - 10;
+static constexpr float BRIGHTNESS_RANGE_NEW = BRIGHTNESS_MAX - BRIGHTNESS_MIN;
 
 static uint32_t rgbToBrightness(const LightState& state) {
     uint32_t color = state.color & 0x00ffffff;
@@ -69,8 +71,6 @@ static T get(const std::string& path, const T& def) {
 }
 
 Light::Light() {
-    mPanelMaxBrightness = get(PANEL_MAX_BRIGHTNESS_PATH, DEFAULT_MAX_BRIGHTNESS);
-
     auto attnFn(std::bind(&Light::setAttentionLight, this, std::placeholders::_1));
     auto backlightFn(std::bind(&Light::setPanelBacklight, this, std::placeholders::_1));
     auto notifFn(std::bind(&Light::setNotificationLight, this, std::placeholders::_1));
@@ -115,13 +115,12 @@ void Light::setPanelBacklight(const LightState& state) {
 
     uint32_t brightness = rgbToBrightness(state);
 
-    // If max panel brightness is not the default (255),
-    // apply linear scaling across the accepted range.
-    if (mPanelMaxBrightness != DEFAULT_MAX_BRIGHTNESS) {
-        int old_brightness = brightness;
-        brightness = brightness * mPanelMaxBrightness / DEFAULT_MAX_BRIGHTNESS;
-        LOG(VERBOSE) << "scaling brightness " << old_brightness << " => " << brightness;
-    }
+    int old_brightness = brightness;
+
+    brightness = BRIGHTNESS_MIN + ((float) brightness - 10) /
+            BRIGHTNESS_RANGE_OLD * BRIGHTNESS_RANGE_NEW;
+
+    LOG(VERBOSE) << "scaling brightness " << old_brightness << " => " << brightness;
 
     set(PANEL_BRIGHTNESS_PATH, brightness);
 }

@@ -42,8 +42,6 @@ struct Light : public ILight {
     void setNotificationLight(const LightState& state);
     void setSpeakerBatteryLightLocked();
 
-    int mPanelMaxBrightness;
-
     LightState mAttentionState;
     LightState mNotificationState;
 
