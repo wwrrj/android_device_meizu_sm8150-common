@@ -23,6 +23,7 @@
 #include <binder/ProcessState.h>
 #include <hidl/HidlTransportSupport.h>
 
+#include "DisplayModes.h"
 #include "PictureAdjustment.h"
 #include "SunlightEnhancement.h"
 
@@ -37,9 +38,11 @@ using android::status_t;
 using android::hardware::configureRpcThreadpool;
 using android::hardware::joinRpcThreadpool;
 
+using ::vendor::mokee::livedisplay::V2_0::IDisplayModes;
 using ::vendor::mokee::livedisplay::V2_0::IPictureAdjustment;
 using ::vendor::mokee::livedisplay::V2_0::ISunlightEnhancement;
 using ::vendor::mokee::livedisplay::V2_0::sdm::PictureAdjustment;
+using ::vendor::mokee::livedisplay::V2_0::sysfs::DisplayModes;
 using ::vendor::mokee::livedisplay::V2_0::sysfs::SunlightEnhancement;
 
 int main() {
@@ -51,6 +54,7 @@ int main() {
     uint64_t cookie = 0;
 
     // HIDL frontend
+    sp<DisplayModes> dm;
     sp<PictureAdjustment> pa;
     sp<SunlightEnhancement> se;
 
@@ -108,6 +112,12 @@ int main() {
         goto shutdown;
     }
 
+    dm = new DisplayModes();
+    if (dm == nullptr) {
+        LOG(ERROR) << "Can not create an instance of LiveDisplay HAL DisplayModes Iface, exiting.";
+        goto shutdown;
+    }
+
     se = new SunlightEnhancement();
     if (se == nullptr) {
         LOG(ERROR) << "Can not create an instance of LiveDisplay HAL SunlightEnhancement Iface, "
@@ -116,6 +126,15 @@ int main() {
     }
 
     configureRpcThreadpool(1, true /*callerWillJoin*/);
+
+    if (dm->isSupported()) {
+        status = dm->registerAsService();
+        if (status != OK) {
+            LOG(ERROR) << "Could not register service for LiveDisplay HAL DisplayModes Iface ("
+                       << status << ")";
+            goto shutdown;
+        }
+    }
 
     if (pa->isSupported()) {
         status = pa->registerAsService();

@@ -2,3 +2,10 @@ service livedisplay-hal-2-0-meizu_sm8150 /system/bin/hw/mokee.livedisplay@2.0-se
     class late_start
     user system
     group system
+
+on post-fs-data
+    mkdir /data/vendor/display
+    chown system system /data/vendor/display
+
+on property:sys.boot_completed=1
+    exec - system system -- /system/bin/mokee.livedisplay@2.0-init.sh

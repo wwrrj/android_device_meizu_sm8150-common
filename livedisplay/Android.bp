@@ -19,6 +19,7 @@ cc_binary {
     defaults: ["hidl_defaults"],
     relative_install_path: "hw",
     srcs: [
+        "DisplayModes.cpp",
         "PictureAdjustment.cpp",
         "SunlightEnhancement.cpp",
         "Utils.cpp",
