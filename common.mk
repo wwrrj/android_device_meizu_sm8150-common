@@ -52,6 +52,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     mokee.biometrics.fingerprint.inscreen@1.0-service.meizu_sm8150
 
+# IMS
+PRODUCT_PACKAGES += \
+    ims-ext-common
+
 # Init
 PRODUCT_PACKAGES += \
     init.qcom.rc
