@@ -67,7 +67,6 @@ PRODUCT_PACKAGES += \
 
 # LiveDisplay
 PRODUCT_PACKAGES += \
-    mokee.livedisplay@2.0-init.sh \
     mokee.livedisplay@2.0-service-meizu_sm8150
 
 # Media

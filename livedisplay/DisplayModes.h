@@ -48,7 +48,6 @@ class DisplayModes : public IDisplayModes {
     std::vector<DisplayMode> mDisplayModes;
 
     DisplayMode getDisplayModeInternal(const char *file);
-    DisplayMode getCurrentDisplayModeInternal();
     DisplayMode getDefaultDisplayModeInternal();
 };
 
