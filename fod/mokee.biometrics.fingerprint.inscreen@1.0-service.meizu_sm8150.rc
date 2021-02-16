@@ -1,6 +1,0 @@
-service fingerprint-inscreen-1-0 /system/bin/hw/mokee.biometrics.fingerprint.inscreen@1.0-service.meizu_sm8150
-    interface vendor.mokee.biometrics.fingerprint.inscreen@1.0::IFingerprintInscreen default
-    class hal
-    user system
-    group system input
-    shutdown critical
