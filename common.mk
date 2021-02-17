@@ -52,6 +52,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     lineage.biometrics.fingerprint.inscreen@1.0-service.meizu_sm8150
 
+
+# HIDL
+PRODUCT_PACKAGES += \
+    android.hidl.base@1.0 \
+    libhidltransport \
+    libhwbinder
+    
 # IMS
 PRODUCT_PACKAGES += \
     ims-ext-common \
