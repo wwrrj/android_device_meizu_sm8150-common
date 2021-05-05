@@ -95,6 +95,10 @@ PRODUCT_BOOT_JARS += \
 # Touch
 PRODUCT_PACKAGES += \
     lineage.touch@1.0-service.meizu_sm8150
+    
+# MEIZUDoze
+PRODUCT_PACKAGES += \
+    MEIZUDoze
 
 # Vibrator
 PRODUCT_PACKAGES += \
